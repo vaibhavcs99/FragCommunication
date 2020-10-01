@@ -1,18 +1,28 @@
 package com.example.fragcommunication;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 public class FragmentTwo extends Fragment {
+    FragmentBListner listner;
+    private EditText editText;
+    public Button button;
+
+    public interface FragmentBListner{
+        void OnInputBSent(CharSequence input);
+    }
 
 
     @Override
@@ -20,22 +30,34 @@ public class FragmentTwo extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_two, container, false);
-        final TextView tv1 = view.findViewById(R.id.textView);
-        Button button2 = view.findViewById(R.id.get);
+        editText = view.findViewById(R.id.PersonName2);
+        button = view.findViewById(R.id.send2);
 
-        button2.setOnClickListener(new View.OnClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name1 = getArguments().getString("name1");
-                tv1.setText(name1);
+                CharSequence input = editText.getText();
+                listner.OnInputBSent(input);
             }
         });
-
-
-
-
         return view;
     }
 
+    public void updateText(CharSequence newText){
+        editText.setText(newText);
+    }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof FragmentBListner){
+            listner = (FragmentBListner) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listner = null;
+    }
 }

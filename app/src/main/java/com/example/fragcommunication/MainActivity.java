@@ -10,39 +10,35 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FragmentOne.FragmentAListener, FragmentTwo.FragmentBListner {
 
-    FragmentManager manager = getSupportFragmentManager();
-
-
-
-
+    FragmentOne fragmentOne;
+    FragmentTwo fragmentTwo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fragmentOne = new FragmentOne();
+        fragmentTwo = new FragmentTwo();
 
-        FragmentOne fragmentOne = new FragmentOne();
-        FragmentTwo fragmentTwo = new FragmentTwo();
-
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.layout1,fragmentOne,"A").addToBackStack(null);
-        transaction.add(R.id.layout2,fragmentTwo,"B").addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.layout1,fragmentOne)
+                .replace(R.id.layout2,fragmentTwo)
+                .commit();
 
     }
 
 
-    public void sendData(View view){
-        EditText et1 = findViewById(R.id.PersonName1);
-        Bundle bundle = new Bundle();
+    @Override
+    public void onInputASent(CharSequence input) {
+        fragmentTwo.updateText(input);
+    }
 
-        bundle.putString("name1",et1.getText().toString());
-
-        FragmentTwo fragmentTwo = new FragmentTwo();
-        fragmentTwo.setArguments(bundle);
+    @Override
+    public void OnInputBSent(CharSequence input) {
+        fragmentOne.updateText(input);
     }
 }
